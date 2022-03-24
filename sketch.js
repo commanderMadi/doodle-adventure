@@ -9,6 +9,7 @@ let gameChar_y;
 let floorPos_y;
 let scrollPos;
 let gameChar_world_x;
+let charHead;
 
 let gameHasStarted;
 let gameHasEnded;
@@ -43,6 +44,7 @@ let gameOverSound;
 function preload() {
   soundFormats('mp3', 'wav', 'ogg');
   backgroundMusic = loadSound('assets/backgroundMusic');
+  charHead = loadImage('assets/charhead.jpg');
 }
 
 function setup() {
@@ -116,7 +118,7 @@ function setup() {
     },
   ];
 
-  trees_x = [600, 750, 900, 950, 1400, 1600, 1852, 2311, 2507, 2955];
+  trees_x = [600, 750, 900, 950, 1400, 1558, 1844, 2311, 2507, 2933];
 
   collectables = [
     {
@@ -278,7 +280,7 @@ function setup() {
       width: 100,
     },
     {
-      x: 2800,
+      x: 2955,
       y: floorPos_y,
       width: 90,
     },
@@ -421,9 +423,9 @@ function draw() {
 // ---------------------
 
 function keyPressed() {
-  if (keyCode === 37 && !isPlummeting) {
+  if ((keyCode === 37 || keyCode === 65) && !isPlummeting) {
     isLeft = true;
-  } else if (keyCode === 39 && !isPlummeting) {
+  } else if ((keyCode === 39 || keyCode === 68) && !isPlummeting) {
     isRight = true;
   } else if (keyCode === 32 && !isFalling && !isPlummeting && gameHasStarted) {
     gameChar_y -= 100;
@@ -433,9 +435,9 @@ function keyPressed() {
 }
 
 function keyReleased() {
-  if (keyCode === 37) {
+  if (keyCode === 37 || keyCode === 65) {
     isLeft = false;
-  } else if (keyCode === 39) {
+  } else if (keyCode === 39 || keyCode === 68) {
     isRight = false;
   } else if (keyCode === 13 && player.lives === 3) {
     gameHasStarted = true;
@@ -453,8 +455,10 @@ function drawGameChar() {
   //Jumping to the left
   if (isLeft && isFalling && gameHasStarted) {
     //head code
-    fill('white');
-    ellipse(gameChar_x, gameChar_y - 60, 25, 25);
+    image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
+
+    // fill('white');
+    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -472,8 +476,10 @@ function drawGameChar() {
   //Jumping right
   else if (isRight && isFalling && gameHasStarted) {
     //head code
-    fill('white');
-    ellipse(gameChar_x, gameChar_y - 60, 25, 25);
+    image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
+
+    // fill('white');
+    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -492,8 +498,10 @@ function drawGameChar() {
   //Walking, turned left
   else if (isLeft && gameHasStarted) {
     //head code
-    fill('white');
-    ellipse(gameChar_x, gameChar_y - 60, 25, 25);
+    image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
+
+    // fill('white');
+    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -511,8 +519,10 @@ function drawGameChar() {
   //Walking, turned right
   else if (isRight && gameHasStarted) {
     //head code
-    fill('white');
-    ellipse(gameChar_x, gameChar_y - 60, 25, 25);
+    image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
+
+    // fill('white');
+    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -530,8 +540,10 @@ function drawGameChar() {
   //Jumping facing forwards
   else if (isFalling || isPlummeting) {
     //head code
-    fill('white');
-    ellipse(gameChar_x, gameChar_y - 60, 25, 25);
+    image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
+
+    // fill('white');
+    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -550,8 +562,9 @@ function drawGameChar() {
   //Standing, facing frontwards
   else {
     //head code
-    fill('white');
-    ellipse(gameChar_x, gameChar_y - 60, 25, 25);
+    image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
+    // fill('white');
+    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
