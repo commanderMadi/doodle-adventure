@@ -210,35 +210,47 @@ function setup() {
 
   mountains = [
     {
-      x1: 50,
+      x1: 5,
       y1: floorPos_y + 3,
       x2: 150,
-      y2: 190,
-      x3: 200,
+      y2: 105,
+      x3: 300,
       y3: floorPos_y + 3,
     },
     {
-      x1: 150,
+      x1: 350,
       y1: floorPos_y + 3,
-      x2: 200,
-      y2: 150,
-      x3: 250,
+      x2: 500,
+      y2: 105,
+      x3: 700,
       y3: floorPos_y + 3,
     },
     {
-      x1: 200,
+      x1: 900,
       y1: floorPos_y + 3,
-      x2: 230,
-      y2: 180,
-      x3: 350,
+      x2: 1050,
+      y2: 105,
+      x3: 1250,
       y3: floorPos_y + 3,
     },
+
+    { x1: 1400, y1: floorPos_y + 3, x2: 1600, y2: 105, x3: 1800, y3: floorPos_y + 3 },
+
     {
-      x1: 1300,
+      x1: 1900,
       y1: floorPos_y + 3,
-      x2: 1350,
-      y2: 150,
-      x3: 1400,
+      x2: 2100,
+      y2: 105,
+      x3: 2300,
+      y3: floorPos_y + 3,
+    },
+
+    {
+      x1: 2500,
+      y1: floorPos_y + 3,
+      x2: 2700,
+      y2: 105,
+      x3: 2900,
       y3: floorPos_y + 3,
     },
   ];
@@ -673,12 +685,14 @@ function drawScoreBoard() {
 }
 
 function drawFlagPole() {
-  fill(255, 0, 0);
-  rect(flagPole.x, flagPole.y, flagPole.width, 333);
+  fill(255, 255, 255);
+  rect(flagPole.x, flagPole.y, flagPole.width + 3, 333);
+  fill(137, 207, 240);
+
   if (flagPole.isReached) {
-    rect(flagPole.x, flagPole.y, 50, 50);
+    rect(flagPole.x, flagPole.y, 100, 75);
   } else {
-    rect(flagPole.x, floorPos_y - flagPole.y + 50, 50, 50);
+    rect(flagPole.x, floorPos_y - flagPole.y + 30, 100, 75);
   }
 }
 
