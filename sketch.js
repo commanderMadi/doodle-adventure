@@ -1,39 +1,46 @@
 /*
 
-The Game Project 5 - Bring it all together
+I extended the game with sound additions. I added the following sound files:
+- A sound when the character jump
+- A sound when he falls in the canyon
+- A sound when a coin is picked from the ground
+- A sound when the game is over (loss)
+- A sound when the game is completed (win)
+- Background music
 
+It was really challenging and I had to go through the p5 documentation to figure out how to control the sound and when it plays, when it loops, etc.. because the draw() function
+is constantly running so without controlling the sound files and how they play, the sound will be totally messed up.
+
+Added heart icons (3 hearts) to represent three lives. I used a p5 example file to draw the hearts and I linked it in a comment before the function `heart`
+
+I added some extra features, like pressing the ENTER key to start the actual game. Once the player presses enter, the game will begin and the background music will start\
+
+To start the game, you must run it using a live-server. It doesn't work with the file// protocol so just opening index.html in the browser won't work (Because of CORS policy)
+
+I hope you like it. I am sorry if the graphics look naive, I am not so creative with drawing :D
 */
 
+// Global Variables
 let gameChar_x;
 let gameChar_y;
 let floorPos_y;
 let scrollPos;
 let gameChar_world_x;
 let charHead;
-
 let gameHasStarted;
 let gameHasEnded;
 let isLeft;
 let isRight;
 let isFalling;
 let isPlummeting;
-
 let trees_x;
-
 let mountains;
-
 let collectables;
-
 let canyons;
-
 let clouds;
-
 let game_score;
-
 let flagPole;
-
 let player;
-
 let fallSound;
 let backgroundMusic;
 let winningSound;
@@ -41,12 +48,14 @@ let jumpSound;
 let grabCoinSound;
 let gameOverSound;
 
+// Preloading function to load the image (character head) and the background music file.
 function preload() {
   soundFormats('mp3', 'wav', 'ogg');
   backgroundMusic = loadSound('assets/backgroundMusic');
   charHead = loadImage('assets/charhead.jpg');
 }
 
+// The setup function, initializing all global variables with their initial values
 function setup() {
   createCanvas(1024, 576);
   soundFormats('mp3', 'wav', 'ogg');
@@ -59,6 +68,7 @@ function setup() {
   gameChar_x = 75;
   gameChar_y = floorPos_y;
 
+  // Initializing clouds locations.
   clouds = [
     {
       x: 150,
@@ -118,7 +128,11 @@ function setup() {
     },
   ];
 
+  // Initializing trees locations.
+
   trees_x = [600, 750, 900, 950, 1400, 1558, 1844, 2311, 2507, 2933];
+
+  // Initializing coins locations.
 
   collectables = [
     {
@@ -207,6 +221,7 @@ function setup() {
       height: 30,
     },
   ];
+  // Initializing mountains locations.
 
   mountains = [
     {
@@ -234,7 +249,14 @@ function setup() {
       y3: floorPos_y + 3,
     },
 
-    { x1: 1400, y1: floorPos_y + 3, x2: 1600, y2: 105, x3: 1800, y3: floorPos_y + 3 },
+    {
+      x1: 1400,
+      y1: floorPos_y + 3,
+      x2: 1600,
+      y2: 105,
+      x3: 1800,
+      y3: floorPos_y + 3,
+    },
 
     {
       x1: 1900,
@@ -254,6 +276,8 @@ function setup() {
       y3: floorPos_y + 3,
     },
   ];
+
+  // Initializing canyons locations.
 
   canyons = [
     {
@@ -297,13 +321,18 @@ function setup() {
       width: 90,
     },
   ];
+  // Initializing the start game score.
 
   game_score = 0;
+
+  /* I created a player object to hold the count of lives and a flag for whether he has died or not. 
+  I used it in some functions like (respawning) when the player falls in the canyon */
 
   player = {
     lives: 3,
     hasDied: false,
   };
+  // Initializing flagpole location and props.
 
   flagPole = {
     x: 3200,
@@ -328,6 +357,8 @@ function setup() {
 // Initialise arrays of scenery objects.
 
 function draw() {
+  // check if the game has started (player pressed enter)
+  // If so, intialize the background music.
   if (gameHasStarted) {
     backgroundMusic.playMode('untilDone');
     backgroundMusic.play();
@@ -335,11 +366,13 @@ function draw() {
     backgroundMusic.stop();
   }
 
-  background(100, 155, 255); // fill the sky blue
+  // fill the sky blue
+  background(100, 155, 255);
 
   noStroke();
   fill(0, 155, 0);
-  rect(0, floorPos_y, width, height - floorPos_y); // draw some green ground
+  // draw some green ground
+  rect(0, floorPos_y, width, height - floorPos_y);
 
   push();
   translate(scrollPos, 0);
@@ -387,10 +420,11 @@ function draw() {
   // Draw score board.
   drawScoreBoard();
 
-  // Logic to make the game character move or the background scroll.
+  // Control whether the "Start Playing" prompt appears or not
   if (!gameHasStarted && player.lives > 0 && !gameHasEnded) {
     disableMovement();
     drawStageBegin('Press Enter to Start Playing');
+    // Logic to make the game character move or the background scroll.
   } else {
     if (isLeft) {
       if (gameChar_x > width * 0.2) {
@@ -419,6 +453,7 @@ function draw() {
       gameChar_y += 5;
       isLeft = false;
       isRight = false;
+      // Play fall sound when player falls in canyon
       fallSound.playMode('untilDone');
       if (gameChar_y >= floorPos_y && gameChar_y < 500) {
         fallSound.play();
@@ -469,9 +504,6 @@ function drawGameChar() {
     //head code
     image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
 
-    // fill('white');
-    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
-
     //torso code
     fill('red');
     rect(gameChar_x - 15, gameChar_y - 50, 30, 30);
@@ -489,9 +521,6 @@ function drawGameChar() {
   else if (isRight && isFalling && gameHasStarted) {
     //head code
     image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
-
-    // fill('white');
-    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -512,9 +541,6 @@ function drawGameChar() {
     //head code
     image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
 
-    // fill('white');
-    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
-
     //torso code
     fill('red');
     rect(gameChar_x - 15, gameChar_y - 50, 30, 30);
@@ -532,9 +558,6 @@ function drawGameChar() {
   else if (isRight && gameHasStarted) {
     //head code
     image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
-
-    // fill('white');
-    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -554,9 +577,6 @@ function drawGameChar() {
     //head code
     image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
 
-    // fill('white');
-    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
-
     //torso code
     fill('red');
     rect(gameChar_x - 15, gameChar_y - 50, 30, 30);
@@ -575,8 +595,6 @@ function drawGameChar() {
   else {
     //head code
     image(charHead, gameChar_x - 25, gameChar_y - 95, 50, 50);
-    // fill('white');
-    // ellipse(gameChar_x, gameChar_y - 60, 25, 25);
 
     //torso code
     fill('red');
@@ -678,12 +696,14 @@ function checkCollectable(t_collectable) {
   }
 }
 
+// Function to draw the score board on top left corner
 function drawScoreBoard() {
   fill(241, 11, 141);
   textSize(23);
   text(`Score: ${game_score}`, 2, 20);
 }
 
+// Function to draw the flagpole at the end of the map (at x: 3200)
 function drawFlagPole() {
   fill(255, 255, 255);
   rect(flagPole.x, flagPole.y, flagPole.width + 3, 333);
@@ -696,8 +716,9 @@ function drawFlagPole() {
   }
 }
 
-// helper function to draw a heart from p5 official website
-// https://editor.p5js.org/Mithru/sketches/Hk1N1mMQg
+/* Helper function to draw a heart from p5 official website
+ https://editor.p5js.org/Mithru/sketches/Hk1N1mMQg */
+
 function heart(x, y, size) {
   beginShape();
   vertex(x, y);
@@ -706,12 +727,13 @@ function heart(x, y, size) {
   endShape(CLOSE);
 }
 
+// Function to spawn the player when he dies
 function spawnPlayer(t_canyon) {
   if (player.lives > 0 && gameChar_y >= 630 && player.hasDied) {
     if (t_canyon.x > 800) {
-      gameChar_x = t_canyon.x + scrollPos - 40;
+      gameChar_x = t_canyon.x + scrollPos - 80;
     } else {
-      gameChar_x = t_canyon.x - 40;
+      gameChar_x = t_canyon.x - 80;
     }
     player.lives--;
 
@@ -721,6 +743,7 @@ function spawnPlayer(t_canyon) {
   }
 }
 
+// Function to draw the prompt for the game to begin.
 function drawStageBegin(prompt) {
   stroke('#6A5ACD');
   fill(0, 0, 128);
@@ -728,6 +751,7 @@ function drawStageBegin(prompt) {
   text(prompt, 300, 180);
 }
 
+// Function to draw lives (represented by hearts) on top left corner, under scoreboard
 function drawLives() {
   if (player.lives === 3) {
     for (let i = 0; i < 3; i++) {
@@ -742,12 +766,14 @@ function drawLives() {
   }
 }
 
+// Function to check if the flagpole has been reached.
 function checkFlagPole() {
   if (abs(gameChar_world_x - flagPole.x) <= 20) {
     flagPole.isReached = true;
   }
 }
 
+// Function to draw the game modal (For game over and level complete popups)
 function drawGameModal() {
   stroke(255, 255, 255);
   fill(0, 0, 0, 90);
@@ -756,11 +782,13 @@ function drawGameModal() {
   textSize(20);
 }
 
+// Function to disable player movement to prevent moving left and right when falling in canyon and when game ends
 function disableMovement() {
   isLeft = false;
   isRight = false;
 }
 
+// Function to check what data should populate the game modal (Game Over for loss) and (Level Complete for winning)
 function checkGameModal() {
   if (gameIsOver()) {
     drawGameModal();
@@ -778,6 +806,7 @@ function checkGameModal() {
   }
 }
 
+// Function to initialize game over modal and play game over sound
 function gameIsOver() {
   if (player.lives < 1) {
     gameHasStarted = false;
@@ -790,6 +819,7 @@ function gameIsOver() {
   return false;
 }
 
+// Function to initialize level complete modal and play level complete sound
 function gameIsCompleted() {
   if (flagPole.isReached) {
     gameHasStarted = false;
